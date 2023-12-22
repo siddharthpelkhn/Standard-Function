@@ -1,0 +1,19 @@
+//function that returns 3 max elements index of an array.
+vector<int> getBest3(vector<int>& a)
+{
+    int p=-1,q=-1,r=-1;
+    for(int i=0;i<a.size();i++)
+    {
+        if(p==-1 || a[i]>a[p]){
+            r=q;
+            q=p;
+            p=i;
+        }else if(q==-1 || a[i]>a[q]){
+            r=q;
+            q=i;
+        }else if(r==-1 || a[i]>a[r]){
+            r=i;
+        }
+    }
+    return {p,q,r};
+}
