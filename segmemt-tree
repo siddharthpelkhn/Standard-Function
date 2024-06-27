@@ -1,0 +1,54 @@
+class segmentTree{
+private:
+   vector<int> arr;
+   int n;
+public:
+    static bool IsPeak(vector<int>& nums,int idx){
+        if(idx<=0 || idx>=nums.size()-1)return false;
+        return (nums[idx]>nums[idx-1] && nums[idx]>nums[idx+1]);
+    }
+    segmentTree(vector<int>& nums){
+       n = nums.size();
+       arr.resize(4*n);
+       build(0,0,n-1,nums);
+    }
+    void build(int idx,int low,int high,vector<int>& nums){
+        if(low ==  high){
+            arr[idx]= IsPeak(nums,low) ? 1 : 0;
+            return;
+        }
+        int mid = (low+high)/2;
+        build(2*idx+1,low,mid,nums);
+        build(2*idx+2,mid+1,high,nums);
+        arr[idx] = arr[2*idx+1] + arr[2*idx+2];
+    }
+    void update(int i,int index,int low,int high,vector<int>& nums){
+        if(low == high){
+            arr[i] = IsPeak(nums,index) ? 1 : 0;
+        }else{
+            int mid = (low+high)/2;
+            if(low<=index && index<=mid){
+                update(2*i+1,index,low,mid,nums);
+            }else{
+                update(2*i+2,index,mid+1,high,nums);
+            }
+            arr[i] = arr[2*i+1] + arr[2*i+2];
+        }
+    }
+    int query(int idx,int low,int high,int l,int r){
+        if(low>r || l>high)return 0;
+        if(l<=low && high<=r){
+            return arr[idx];
+        }
+        int mid = (low+high)/2;
+        int left = query(2*idx+1,low,mid,l,r);
+        int right = query(2*idx+2,mid+1,high,l,r);
+        return left+right;
+    }
+    void updateOpearation(vector<int>& nums,int index){
+        update(0,index,0,n-1,nums);
+    }
+    int queryOperation(int l,int r){
+        return query(0,0,n-1,l,r);
+    }
+};
